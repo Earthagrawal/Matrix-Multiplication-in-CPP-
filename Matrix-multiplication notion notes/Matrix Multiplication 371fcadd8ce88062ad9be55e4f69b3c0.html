@@ -1,0 +1,1389 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Matrix Multiplication:</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style></head><body><article id="371fcadd-8ce8-8062-ad9b-e55e4f69b3c0" class="page sans"><header><h1 class="page-title" dir="auto">Matrix Multiplication:</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><p id="371fcadd-8ce8-8077-b6bb-d001b7ecaada" class="" dir="auto">work : </p><ol type="1" id="371fcadd-8ce8-801a-b98a-e1e84ba8d24a" class="numbered-list" start="1" dir="auto"><li>Understanding strategies</li></ol><ol type="1" id="371fcadd-8ce8-803f-897e-f6a70c51f0ce" class="numbered-list" start="2" dir="auto"><li>CPU : Codes of step by step learning</li></ol><ol type="1" id="372fcadd-8ce8-80b0-8aa2-f047393d43dc" class="numbered-list" start="3" dir="auto"><li>GPU : Codes for checking, running, optimizing</li></ol><ol type="1" id="374fcadd-8ce8-80a1-af69-d02aea56352e" class="numbered-list" start="4" dir="auto"><li>Parallelism : GPU structure</li></ol><p id="371fcadd-8ce8-804e-a3c4-dd312486c5c9" class="" dir="auto">
+</p><p id="371fcadd-8ce8-8011-9b79-fce7e76aa32b" class="" dir="auto">
+</p><p id="371fcadd-8ce8-80db-bce5-e87e02c57eeb" class="" dir="auto">
+</p><h1 id="371fcadd-8ce8-805d-95ab-d867045efad5" class="" dir="auto">1. <span style="border-bottom:0.05em solid">Understanding Strategies:</span></h1><h3 id="371fcadd-8ce8-80b6-9452-e549786704b6" class="" dir="auto">Classical method is the n-cube: loop order is i →j→k</h3><h3 id="371fcadd-8ce8-8059-8193-e422a6739bc8" class="" dir="auto">a. Loop Order Change : keep loop order i→k→j</h3><p id="371fcadd-8ce8-80f7-823d-f3026c70920f" class="" dir="auto">helps by reusing some numbers, makes memory access a bit less</p><h3 id="371fcadd-8ce8-80cb-ab66-e36db940aba8" class="" dir="auto">b. Blocking/TIling</h3><p id="371fcadd-8ce8-8035-b7bb-f217487f213e" class="" dir="auto">making matrix blocks, and using a block fully, then calling another one</p><h3 id="371fcadd-8ce8-8063-8f15-c0679df7da23" class="" dir="auto">c. Transposing the matrix B</h3><p id="371fcadd-8ce8-8070-89d8-c493581d2891" class="" dir="auto">this costs once, when B is gonna be transposed. However, row wise access is faster than the column wise one. Therefore, fruitful!</p><h3 id="371fcadd-8ce8-80c0-9d32-c25e50ad4af1" class="" dir="auto">d. Packing</h3><p id="371fcadd-8ce8-8042-93c0-f6fc6c4843fd" class="" dir="auto">custom arranging the matrix, so cpu <br/>does not : read, jump, read, jump<br/>does : read, read, read, read</p><h3 id="371fcadd-8ce8-801a-b93a-da2da38cb215" class="" dir="auto">e. Vectorization / SIMD</h3><p id="371fcadd-8ce8-8067-8ddc-c995d603fd0c" class="" dir="auto">make a vector of values, perform 1 command once on the whole vector</p><h3 id="371fcadd-8ce8-80ac-8a48-ed4e3a3c96a3" class="" dir="auto">f. Register use</h3><p id="371fcadd-8ce8-8026-81a4-c3bf1d8a2e2e" class="" dir="auto">store some things in the registers</p><h3 id="371fcadd-8ce8-8039-b38e-cc574648cdf5" class="" dir="auto">g. Microkernals</h3><p id="371fcadd-8ce8-803c-a433-debc76d6ee73" class="" dir="auto">specific, fixed algo executers! V. Fast at tiny block multiplications!</p><h3 id="371fcadd-8ce8-805f-80fd-e6ae3cc7c1ca" class="" dir="auto">h. Parallelism</h3><h3 id="371fcadd-8ce8-801f-9c83-f20c38521257" class="" dir="auto">i. Block based Parallelism : Most used</h3><p id="371fcadd-8ce8-80db-9a15-e22d0bf7030b" class="" dir="auto">each thread computes only a part of the  resulting matrix, so it calls only blocks of the A and B and works </p><p id="371fcadd-8ce8-8074-877e-e4ad3dc65c0d" class="" dir="auto">works coz : Blocking better, balanced load balancing, no interference</p><h3 id="371fcadd-8ce8-80b6-b543-dd8ddce863d3" class="" dir="auto">j. Threading the work across multiple cores of the CPU </h3><p id="371fcadd-8ce8-809e-89db-da86ef11b387" class="" dir="auto">also an algo optimization strategy</p><p id="371fcadd-8ce8-8091-95f2-c8c62630cb03" class="" dir="auto">
+</p><p id="371fcadd-8ce8-80d8-8b44-d0c9a49b93fb" class="" dir="auto">
+</p><h2 id="371fcadd-8ce8-803b-aed1-f6c24e9a6d11" class="" dir="auto">2. CPU Codes</h2><h3 id="371fcadd-8ce8-8015-b664-d0f47138e6ac" class="" dir="auto">1. Single Worker Function With 2 Threads</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js" integrity="sha512-8VrjxGFLIkS0mgEmO3p46A5OkqATHhrNVwyv2V7yUeZrk1jmSDuI3SOEpC9XHEHUWEOsfzzcJeBlUkee9lKGrw==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js" integrity="sha512-namzGTZvHaug0jeipHRN2pMepMiJj+EbrloktVFlMYGnA0EwZhbdLeENjBYLCgoghVbZGinIz/FFYHmB0o3wLw==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="371fcadd-8ce8-8078-bccd-eb038c3b300d" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+vector&lt;int&gt; arr = {1, 2, 3, 4, 5, 6, 7, 8};
+
+void worker(int start_index, int end_index, int&amp; result)
+{
+    result = 0;
+
+    for (int i = start_index; i &lt; end_index; i++)
+    {
+        result += arr[i];
+    }
+}
+
+int main()
+{
+    int n = arr.size();
+
+    int sum1 = 0;
+    int sum2 = 0;
+
+    thread t1(worker, 0, n / 2, ref(sum1));
+    thread t2(worker, n / 2, n, ref(sum2));
+
+    t1.join();
+    t2.join();
+
+    int total = sum1 + sum2;
+
+    cout &lt;&lt; &quot;Sum 1: &quot; &lt;&lt; sum1 &lt;&lt; endl;
+    cout &lt;&lt; &quot;Sum 2: &quot; &lt;&lt; sum2 &lt;&lt; endl;
+    cout &lt;&lt; &quot;Total: &quot; &lt;&lt; total &lt;&lt; endl;
+
+    return 0;
+}</code></pre><p id="371fcadd-8ce8-8076-9a90-d62540503a8a" class="" dir="auto">
+</p><h3 id="371fcadd-8ce8-80b4-994d-c8083b365932" class="" dir="auto">2. First Parallel Matrix Multiplication (Hardcoded 2 Threads)</h3><pre id="371fcadd-8ce8-804a-ae8e-f114f57489ee" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; A = {
+    {1, 2},
+    {3, 4}
+};
+
+vector&lt;vector&lt;int&gt;&gt; B = {
+    {5, 6},
+    {7, 8}
+};
+
+vector&lt;vector&lt;int&gt;&gt; C(2, vector&lt;int&gt;(2, 0));
+
+void worker(int start_row, int end_row)
+{
+    int cols_B = B[0].size();
+    int cols_A = A[0].size();
+
+    for (int i = start_row; i &lt; end_row; i++)
+    {
+        for (int j = 0; j &lt; cols_B; j++)
+        {
+            for (int k = 0; k &lt; cols_A; k++)
+            {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+}
+
+int main()
+{
+    int rows = A.size();
+
+    thread t1(worker, 0, rows / 2);
+    thread t2(worker, rows / 2, rows);
+
+    t1.join();
+    t2.join();
+
+    cout &lt;&lt; &quot;Result matrix:\n&quot;;
+
+    for (auto row : C)
+    {
+        for (auto value : row)
+        {
+            cout &lt;&lt; value &lt;&lt; &quot; &quot;;
+        }
+
+        cout &lt;&lt; endl;
+    }
+
+    return 0;
+}</code></pre><p id="371fcadd-8ce8-80cb-96b9-f699f2d799e1" class="" dir="auto">
+</p><h3 id="371fcadd-8ce8-802e-b473-e5872b09f717" class="" dir="auto">3. Reusable Worker (No dependency or any fixed Globals ):</h3><p id="372fcadd-8ce8-804b-8599-d4d14df3ff9f" class="" dir="auto">worker will use whatever matrix and rows u pass, none else</p><pre id="371fcadd-8ce8-8075-b72c-f6bff5cc4212" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#include &lt;vector&gt; 
+#include &lt;thread&gt;
+
+using namespace std;
+
+void worker(
+    const vector&lt;vector&lt;int&gt;&gt;&amp; A,
+    const vector&lt;vector&lt;int&gt;&gt;&amp; B,
+    vector&lt;vector&lt;int&gt;&gt;&amp; C,
+    int start_row,
+    int end_row)
+{
+    int cols_B = B[0].size();
+    int cols_A = A[0].size();
+
+    for (int i = start_row; i &lt; end_row; i++)
+    {
+        for (int j = 0; j &lt; cols_B; j++)
+        {
+            C[i][j] = 0;
+
+            for (int k = 0; k &lt; cols_A; k++)
+            {
+                C[i][j] += A[i][k] * B[k][j];
+            }
+        }
+    }
+}
+
+int main()
+{
+    vector&lt;vector&lt;int&gt;&gt; A = {
+        {1, 2},
+        {3, 4}
+    };
+
+    vector&lt;vector&lt;int&gt;&gt; B = {
+        {5, 6},
+        {7, 8}
+    };
+
+    int rows_A = A.size();
+    int cols_B = B[0].size();
+
+    vector&lt;vector&lt;int&gt;&gt; C(rows_A, vector&lt;int&gt;(cols_B, 0));
+
+    thread t1(worker, cref(A), cref(B), ref(C), 0, rows_A / 2);
+    thread t2(worker, cref(A), cref(B), ref(C), rows_A / 2, rows_A);
+
+    t1.join();
+    t2.join();
+
+    cout &lt;&lt; &quot;Result matrix:\n&quot;;
+
+    for (auto row : C)
+    {
+        for (auto value : row)
+        {
+            cout &lt;&lt; value &lt;&lt; &quot; &quot;;
+        }
+
+        cout &lt;&lt; endl;
+    }
+
+    return 0;
+}</code></pre><p id="371fcadd-8ce8-8019-9851-f7d114f47467" class="" dir="auto">
+</p><h3 id="371fcadd-8ce8-80e8-ba2e-f791aebe80c1" class="" dir="auto">4. Dynamic Thread Creation</h3><pre id="371fcadd-8ce8-801e-b95e-ebbae600afa2" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+void worker(
+    const vector&lt;vector&lt;int&gt;&gt;&amp; A,
+    const vector&lt;vector&lt;int&gt;&gt;&amp; B,
+    vector&lt;vector&lt;int&gt;&gt;&amp; C,
+    int start_row,
+    int end_row)
+{
+    int cols_B = B[0].size();
+    int cols_A = A[0].size();
+
+    for (int i = start_row; i &lt; end_row; i++)
+    {
+        for (int j = 0; j &lt; cols_B; j++)
+        {
+            C[i][j] = 0;
+
+            for (int k = 0; k &lt; cols_A; k++)
+            {
+                C[i][j] += A[i][k] * B[k][j]; 
+            }
+        }
+    }
+}
+
+int main()
+{
+    vector&lt;vector&lt;int&gt;&gt; A = {
+        {1, 2},
+        {3, 4}
+    };
+
+    vector&lt;vector&lt;int&gt;&gt; B = {
+        {5, 6},
+        {7, 8}
+    };
+
+    int rows_A = A.size();
+    int cols_B = B[0].size();
+
+    vector&lt;vector&lt;int&gt;&gt; C(rows_A, vector&lt;int&gt;(cols_B, 0));
+
+    int num_threads = 2;
+
+    vector&lt;thread&gt; threads;
+
+    int rows_per_thread = rows_A / num_threads;
+
+    for (int i = 0; i &lt; num_threads; i++)
+    {
+        int start_row = i * rows_per_thread;
+
+        int end_row;
+
+        if (i == num_threads - 1)
+        {
+            end_row = rows_A;
+        }
+        else
+        {
+            end_row = start_row + rows_per_thread;
+        }
+
+        threads.push_back(
+            thread(
+                worker,
+                cref(A),
+                cref(B),
+                ref(C),
+                start_row,
+                end_row
+            )
+        );
+    }
+
+    for (auto&amp; t : threads)
+    {
+        t.join();
+    }
+
+    cout &lt;&lt; &quot;Result matrix:\n&quot;;
+
+    for (auto row : C)
+    {
+        for (auto value : row)
+        {
+            cout &lt;&lt; value &lt;&lt; &quot; &quot;;
+        }
+
+        cout &lt;&lt; endl;
+    }
+
+    return 0;
+}</code></pre><p id="371fcadd-8ce8-80d9-8f3e-ca05845ba76e" class="" dir="auto">
+</p><h3 id="371fcadd-8ce8-80a9-8920-c0645b2eb238" class="" dir="auto">5. Automatic CPU Thread Count</h3><pre id="371fcadd-8ce8-8097-b352-cad2849f12c9" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">int num_threads = thread::hardware_concurrency();
+
+if (num_threads == 0)
+{
+    num_threads = 2;
+}
+
+num_threads = min(num_threads, rows_A);
+</code></pre><p id="372fcadd-8ce8-8046-82d9-f34984cdbc05" class="" dir="auto">
+</p><h2 id="371fcadd-8ce8-80a9-bcd1-c51cae72c31d" class="" dir="auto">3. GPU Codes</h2><p id="372fcadd-8ce8-8032-9d6f-e52c183daa53" class="" dir="auto">
+</p><h3 id="372fcadd-8ce8-8068-a6df-fab8e7a4c718" class="" dir="auto">a. checking GPU</h3><pre id="372fcadd-8ce8-8083-a9e6-c833f58e1f25" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#include &lt;cuda_runtime.h&gt;
+
+using namespace std;
+
+int main()
+{
+    int gpu_count;
+
+    cudaGetDeviceCount(&amp;gpu_count);
+
+    cout &lt;&lt; &quot;GPUs found: &quot;
+         &lt;&lt; gpu_count
+         &lt;&lt; endl;
+
+    return 0;
+}</code></pre><p id="372fcadd-8ce8-80d4-83cf-e8aad552fa14" class="" dir="auto">
+</p><h3 id="372fcadd-8ce8-80ff-a675-c2633182726a" class="" dir="auto">b. First GPU thread</h3><pre id="372fcadd-8ce8-806c-bd78-c4d227c11f6f" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#include &lt;cuda_runtime.h&gt;
+
+using namespace std;
+
+// GPU function (kernel)
+__global__ void helloGPU()
+{
+    printf(&quot;Hello from GPU!\n&quot;);
+}
+
+int main()
+{
+    // Launch kernel
+    helloGPU&lt;&lt;&lt;1, 1&gt;&gt;&gt;();
+    //This means:   &lt;&lt;&lt; number_of_blocks , threads_per_block &gt;&gt;&gt;
+    //will act like a single thread
+
+    // Wait for GPU to finish
+    cudaDeviceSynchronize();
+
+    cout &lt;&lt; &quot;Done\n&quot;;
+
+    return 0;
+}</code></pre><p id="372fcadd-8ce8-8076-96b1-ff9b574f41a0" class="" dir="auto">
+</p><h3 id="372fcadd-8ce8-8001-a7d6-cc0e55d2da0b" class="" dir="auto">c. count and type in the collab</h3><pre id="372fcadd-8ce8-8037-b95d-e0b998e4b8b7" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">%%writefile gpu_check.cu
+
+#include &lt;iostream&gt;
+#include &lt;cuda_runtime.h&gt;
+
+using namespace std;
+
+int main()
+{
+    int gpu_count = 0;
+
+    cudaError_t status =
+        cudaGetDeviceCount(&amp;gpu_count);
+
+    if (status != cudaSuccess)
+    {
+        cout &lt;&lt; &quot;CUDA error: &quot;
+             &lt;&lt; cudaGetErrorString(status)
+             &lt;&lt; endl;
+
+        return 1;
+    }
+
+    if (gpu_count == 0)
+    {
+        cout &lt;&lt; &quot;No GPU detected&quot;
+             &lt;&lt; endl;
+
+        return 1;
+    }
+
+    cudaDeviceProp gpu;
+
+    cudaGetDeviceProperties(&amp;gpu, 0);
+
+    cout &lt;&lt; &quot;GPUs found: &quot;
+         &lt;&lt; gpu_count
+         &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;GPU Name: &quot;
+         &lt;&lt; gpu.name
+         &lt;&lt; endl;
+
+    return 0;
+}</code></pre><pre id="372fcadd-8ce8-80ba-bf77-f2836ffa45af" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">!nvcc gpu_check.cu -o gpu_check
+!./gpu_check</code></pre><p id="372fcadd-8ce8-8065-ae8c-da542696ae7f" class="" dir="auto">
+</p><h3 id="372fcadd-8ce8-80ae-82db-dc58e2f71cf6" class="" dir="auto">d. Many GPU threads</h3><pre id="372fcadd-8ce8-8061-afcc-cec398e97c85" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">%%writefile gpu_threads.cu
+
+#include &lt;iostream&gt;
+#include &lt;cuda_runtime.h&gt;
+
+// GPU kernel
+__global__ void printThreadID()
+{
+    int id = threadIdx.x;
+
+    printf(&quot;Hello from GPU thread %d\n&quot;, id);
+}
+
+int main()
+{
+    // Launch 1 block with 8 threads
+    printThreadID&lt;&lt;&lt;1, 8&gt;&gt;&gt;();
+
+    cudaDeviceSynchronize();
+
+    return 0;
+}</code></pre><pre id="372fcadd-8ce8-80c4-8ec9-e3930e71c63c" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">!nvcc gpu_threads.cu -o gpu_threads
+!./gpu_threads</code></pre><p id="372fcadd-8ce8-80d7-968b-fed89eceb501" class="" dir="auto">
+</p><h3 id="372fcadd-8ce8-800c-b437-eb55a0368038" class="" dir="auto">e. First parallel Matrix Multiplication</h3><pre id="372fcadd-8ce8-8090-87ce-df9256f4c100" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">%%writefile matrix_mul.cu
+
+#include &lt;iostream&gt;
+#include &lt;cuda_runtime.h&gt;
+
+using namespace std;
+
+// GPU kernel
+__global__ void matrixMultiply(
+    int* A,
+    int* B,
+    int* C,
+    int N)
+{
+    int row = threadIdx.y;
+    int col = threadIdx.x;
+
+    int sum = 0;
+
+    for (int k = 0; k &lt; N; k++)
+    {
+        sum +=
+            A[row * N + k] *
+            B[k * N + col];
+    }
+
+    C[row * N + col] = sum;
+}
+
+int main()
+{
+    const int N = 2;
+
+    int A[N * N] =
+    {
+        1, 2,
+        3, 4
+    };
+
+    int B[N * N] =
+    {
+        5, 6,
+        7, 8
+    };
+
+    int C[N * N];
+
+    int *d_A, *d_B, *d_C;
+
+    int size = N * N * sizeof(int);
+
+    // Allocate GPU memory
+    cudaMalloc(&amp;d_A, size);
+    cudaMalloc(&amp;d_B, size);
+    cudaMalloc(&amp;d_C, size);
+
+    // CPU -&gt; GPU
+    cudaMemcpy(
+        d_A,
+        A,
+        size,
+        cudaMemcpyHostToDevice
+    );
+
+    cudaMemcpy(
+        d_B,
+        B,
+        size,
+        cudaMemcpyHostToDevice
+    );
+
+    // Launch 2x2 GPU threads
+    dim3 threadsPerBlock(N, N);
+
+    matrixMultiply&lt;&lt;&lt;1, threadsPerBlock&gt;&gt;&gt;(
+        d_A,
+        d_B,
+        d_C,
+        N
+    );
+
+    cudaDeviceSynchronize();
+
+    // GPU -&gt; CPU
+    cudaMemcpy(
+        C,
+        d_C,
+        size,
+        cudaMemcpyDeviceToHost
+    );
+
+    // Print matrix
+    cout &lt;&lt; &quot;Result matrix:\n&quot;;
+
+    for (int i = 0; i &lt; N; i++)
+    {
+        for (int j = 0; j &lt; N; j++)
+        {
+            cout
+                &lt;&lt; C[i * N + j]
+                &lt;&lt; &quot; &quot;;
+        }
+
+        cout &lt;&lt; endl;
+    }
+
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
+
+    return 0;
+}</code></pre><pre id="372fcadd-8ce8-80ee-be6d-c9a704505f1d" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">!nvcc matrix_mul.cu -o matrix_mul
+!./matrix_mul</code></pre><p id="374fcadd-8ce8-802d-b1cc-e816ee9d0077" class="" dir="auto">
+</p><p id="374fcadd-8ce8-80d9-bafb-c8c10d57e036" class="" dir="auto">
+</p><h1 id="374fcadd-8ce8-8055-97bb-c12ae608f6ba" class="" dir="auto"><span style="border-bottom:0.05em solid">Understanding Parallelisms</span></h1><h2 id="374fcadd-8ce8-800b-b559-d58de4b548fa" class="" dir="auto">1. GPU structure<br/></h2><p id="374fcadd-8ce8-80e9-8b02-ff3b2ab96911" class="" dir="auto">GPU is the Factory, inside :<br/>Each workshop is called an <strong>SM</strong> (<strong>Streaming Multiprocessor</strong>) and it contains many workers.</p><p id="374fcadd-8ce8-80a6-9c49-f81704eb0949" class="" dir="auto">Parallelism ≠ necessarily merging results. </p><p id="374fcadd-8ce8-801d-bec5-d22c35aa12d5" class="" dir="auto">Each workshop has many workers, similarly SM has many CUDA cores. So GPU cores are spread among the SMs in Small groups called WARPS.</p><p id="374fcadd-8ce8-80de-ac6f-d9ba0fde53dd" class="" dir="auto">
+</p><h3 id="374fcadd-8ce8-800e-8f15-c0d7627a6ff3" class="" dir="auto">a. Warps: a group of 32 threads that execute together.</h3><p id="374fcadd-8ce8-8059-8fae-ca8aec50a088" class="" dir="auto">set of workers where all workers start doing same thing under 1 common instruction.<br/>All 32 workers receive the <strong>same instruction</strong> at the same time. The GPU loves this because one instruction can drive many workers.</p><p id="374fcadd-8ce8-8056-ace1-fb09f59c7b26" class="" dir="auto">The important thing each worker owns is:</p><ul id="374fcadd-8ce8-803e-969c-f5585bd1871d" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Current instruction position</li></ul><ul id="374fcadd-8ce8-80e4-ad74-cf06ef64744f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Identity</li></ul><p id="374fcadd-8ce8-806f-82c1-d7641ea413a7" class="" dir="auto">So when the instruction says: c[i] = a[i] + b[i];</p><p id="374fcadd-8ce8-80ee-b246-cb22f7b9cde3" class="" dir="auto">each worker plugs in its own identity: </p><ul id="374fcadd-8ce8-80c3-a474-d14e02e9b45a" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Worker 0 -&gt; i = 0</li></ul><ul id="374fcadd-8ce8-8082-becc-e87203d92696" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Worker 1 -&gt; i = 1</li></ul><ul id="374fcadd-8ce8-803e-a9c5-cd9f4b80deff" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Worker 2 -&gt; i = 2</li></ul><ul id="374fcadd-8ce8-806b-a191-c8c82bd2322a" class="bulleted-list" dir="auto"><li style="list-style-type:disc">…</li></ul><p id="374fcadd-8ce8-8093-86a3-c5ce36b3328b" class="" dir="auto">
+</p><h4 id="374fcadd-8ce8-80c1-9eda-e9505fa9abbf" class="" dir="auto">In CUDA: </h4><p id="374fcadd-8ce8-802a-8d8b-cae03754b118" class="" dir="auto">Thread = job<br/>CUDA Core = worker</p><p id="374fcadd-8ce8-8039-b780-f4c9f35448f3" class="" dir="auto">A thread is a piece of work you want done and A CUDA core is hardware that executes instructions.</p><p id="374fcadd-8ce8-805e-88ad-d62d74cb010b" class="" dir="auto">A <strong>block</strong> is just a collection of threads.</p><p id="374fcadd-8ce8-8069-870c-c76622135f46" class="" dir="auto">A <strong>grid</strong> is a collection of blocks.</p><p id="374fcadd-8ce8-803c-88ff-cc9c511f773e" class="" dir="auto">The SM receives <strong>blocks</strong>.</p><p id="374fcadd-8ce8-8040-8d0d-fde9debd0a5e" class="" dir="auto">Then the SM internally breaks that block into warps and schedules those warps.</p><p id="374fcadd-8ce8-80b7-8e1f-ebac74021130" class="" dir="auto">Programmer view: Grid → Block → Thread</p><p id="374fcadd-8ce8-8080-9c5e-e7dc0fae0722" class="" dir="auto">Hardware view: GPU → SM → Warp → CUDA cores</p><p id="374fcadd-8ce8-8013-9cb3-c613980a1599" class="" dir="auto">Inside the <strong>same warp</strong>, some threads want A and others want B.<br/>This is called <strong>warp divergence</strong>, and it is one of the most important performance concepts in CUDA.</p><p id="376fcadd-8ce8-80aa-945a-f052da382125" class="" dir="auto">Blocks are therefore the <strong>units of scheduling</strong>. The scheduler can then Allot blocks to the SM’s and if a SM get free, allot it another block.</p><h4 id="376fcadd-8ce8-80a3-b7b6-ea89ff71a06c" class="" dir="auto"><span style="border-bottom:0.05em solid">CUDA CODING</span></h4><p id="376fcadd-8ce8-80f2-a668-dd91efd37e17" class="" dir="auto">CUDA gives thread id and block id and block dimention (number of threads in a block ) to each thread, so it can calculate which index, the thread has to work on. </p><p id="376fcadd-8ce8-8096-9bcf-d0a0368c69e1" class="" dir="auto">gloabal id = block id * block Dim + thread id</p><p id="376fcadd-8ce8-8047-81de-c4fb655ad86f" class="" dir="auto">You think:                                 Launch 1024 threads<br/>and each thread computes:     b[my_id] = a[my_id] * 2;<br/>The hardware becomes the loop.</p><p id="376fcadd-8ce8-8069-a7d3-ece0aa2dc638" class="" dir="auto">
+</p><h4 id="376fcadd-8ce8-8079-ad78-da36b7bdff2f" class="" dir="auto"><span style="border-bottom:0.05em solid">CUDA Kernel Launches:</span></h4><p id="376fcadd-8ce8-8055-b1c9-cf69c603a907" class="" dir="auto">CUDA cores do not split a single thread among themselves!!</p><p id="376fcadd-8ce8-8040-8e49-cbee3cb9fa16" class="" dir="auto"><span style="border-bottom:0.05em solid">Kernel</span> : A function that runs on the GPU and is executed by many threads simultaneously.<br/>e.g. :   __global_ _ add(int * a, int * b)</p><p id="376fcadd-8ce8-80d8-9227-f4eac7970e5e" class="" dir="auto">You don&#x27;t make a GPU fast by giving threads more hardware.<br/>You make a GPU fast by giving hardware more threads.<br/>The target : Create enough Parallel work to keep the machine busy.</p><p id="376fcadd-8ce8-807f-b64c-f5bd3037e499" class="" dir="auto">More threads give the scheduler enough work to keep all SMs busy, and enough spare work to switch to when some threads are waiting. That second part becomes incredibly important later.</p><p id="377fcadd-8ce8-807d-b914-ce0acee4a29c" class="" dir="auto"><span style="border-bottom:0.05em solid">A Kernel Code:</span></p><pre id="377fcadd-8ce8-80cd-ae24-fcfafbcddeb9" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">__global__ void double_array(int* a, int* b, int N)
+{
+    int gid = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (gid &lt; N)
+    {
+        b[gid] = a[gid] * 2;
+    }
+}</code></pre><p id="377fcadd-8ce8-800f-b5d1-e73a0eb24f04" class="" dir="auto">
+</p><p id="376fcadd-8ce8-80de-b0c4-e9fea01a2575" class="" dir="auto"><span style="border-bottom:0.05em solid">Race Condition :</span> If 2 threads get the same gid and they work on the same element!</p><p id="376fcadd-8ce8-802a-9c1d-e6f45a44337b" class="" dir="auto">CPU:  Few powerful cores<br/>          Large caches<br/>          Complex control logic</p><p id="377fcadd-8ce8-80ab-97e6-eb07a98f15c0" class="" dir="auto">GPU:  Thousands of threads<br/>          Massive memory bandwidth<br/>          Hide latency with parallelism</p><p id="377fcadd-8ce8-80f3-9045-f44175a96316" class="" dir="auto">
+</p><h3 id="377fcadd-8ce8-8013-be71-f94723100537" class="" dir="auto">Memory :</h3><figure id="37cfcadd-8ce8-8083-a281-c75d841989b3" class="image" data-notion-image="image.png" dir="ltr"><a href="image.png"><img style="width:691.977294921875px" src="image.png"/></a></figure><figure id="382fcadd-8ce8-80fa-9f46-cabe23d24149" class="image" data-notion-image="image%201.png" dir="ltr"><a href="image%201.png"><img style="width:704px" src="image%201.png"/></a></figure><div dir="auto"><div id="377fcadd-8ce8-80be-a8d4-d83008ee24b6" class="column-list" data-notion-column-list="" dir="auto"><div id="377fcadd-8ce8-80a8-95ec-ef6fe4329904" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><h4 id="377fcadd-8ce8-800a-a0fb-e646633b1a86" class="" dir="auto">Heirarchy: </h4><p id="377fcadd-8ce8-80bd-aca5-f879b5bef553" class="" dir="auto">faster to slower →</p></div><div id="377fcadd-8ce8-805a-b072-e5adb6cb1a34" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-801d-9253-e7590610be66" class="" dir="auto">Register : <br/>Private to threads.<br/><br/>Each thread has a register count and more the the count, Less the total threads possible for that many registers.<br/></p></div><div id="377fcadd-8ce8-8098-b5e2-dc941664deb6" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-803f-997e-d425bc8b1321" class="" dir="auto">Shared Memory:<br/>shared by threads in a block!</p></div><div id="377fcadd-8ce8-8081-9a53-e7632c671c35" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-800f-bce0-e2bf9d37b88f" class="" dir="auto">Global Memory<br/>visible to everybody</p><p id="377fcadd-8ce8-804e-859c-dcc1bb7f5a5d" class="" dir="auto">
+</p></div></div></div><div id="377fcadd-8ce8-802b-8b8f-cb06a8768ba4" class="column-list" data-notion-column-list="" dir="auto"><div id="377fcadd-8ce8-80d9-b218-c9ab1d6f1c5e" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-806b-85d0-e111ab7b4e70" class="" dir="auto">GPU<br/>│<br/>├── SM 0<br/>│   ├── CUDA cores<br/>│   ├── Shared Memory<br/>│   └── Register File (register is not inside the core)<br/>│<br/>├── SM 1<br/>│   ├── CUDA cores<br/>│   ├── Shared Memory<br/>│   └── Register File<br/>│<br/>└── ...</p></div><div id="377fcadd-8ce8-8033-87d7-c548816329a5" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-8006-a084-f520e2baff06" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80a3-aa8b-ccd7f03abda9" class="" dir="auto">Thread 0<br/>\<br/>  \<br/>Shared Memory<br/>  /<br/>/<br/>Thread 1</p><p id="377fcadd-8ce8-80d2-8b7a-faeabdbd21ae" class="" dir="auto">
+</p></div><div id="377fcadd-8ce8-8059-886d-d1b60fcc8325" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-805a-b8ba-ca87b86ff1dc" class="" dir="auto">More registers per thread<br/>↑<br/>Potentially faster individual thread</p><p id="377fcadd-8ce8-8029-b699-cb7d4cd9e7c2" class="" dir="auto">But</p><p id="377fcadd-8ce8-8093-8b48-eba96e60efa6" class="" dir="auto">Fewer active threads<br/>↓<br/>Potentially lower occupancy</p><p id="377fcadd-8ce8-80db-96e1-c8bb0d4ee656" class="" dir="auto">That&#x27;s why CUDA programmers care about register count.</p></div></div><h2 id="377fcadd-8ce8-8057-bb52-e22aff5b74cc" class="" dir="auto">CUDA / GEMM : Load once, reuse many times.</h2><p id="377fcadd-8ce8-8050-8595-fb58d2ff2fe1" class="" dir="auto">Blocking exists because shared memory exists!</p><p id="377fcadd-8ce8-801f-902f-ec3cc34cf7f7" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80a8-841c-fd7fba267a62" class="" dir="auto">kernel launch : double_array&lt;&lt;&lt;4,256&gt;&gt;&gt;(a, b, N);</p><p id="377fcadd-8ce8-8035-bc0f-de3a91cfa1c0" class="" dir="auto">
+</p><div id="377fcadd-8ce8-80a4-9763-d6e5d19b5b8e" class="column-list" data-notion-column-list="" dir="auto"><div id="377fcadd-8ce8-8083-bbb1-c073fe37c687" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-80bd-a922-c672d50859e3" class="" dir="auto">CUDA allows: threadIdx.x<br/>                      threadIdx.y<br/></p></div><div id="377fcadd-8ce8-8002-8d74-dd5ea4c8591e" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-809e-861c-e9b9e40a802d" class="" dir="auto">Thread(row,col)<br/>↓<br/>Computes<br/>↓<br/>C[row][col]</p></div></div><p id="377fcadd-8ce8-80ae-a590-ce80e39ee1a3" class="" dir="auto">That&#x27;s the entire philosophy behind the naive CUDA GEMM. <br/>                                        One thread  →  One output element.</p><div id="377fcadd-8ce8-8093-b1f1-dbc0c1d9b996" class="column-list" data-notion-column-list="" dir="auto"><div id="377fcadd-8ce8-80c2-9808-dde05de69fd0" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><h3 id="377fcadd-8ce8-80fc-8b0d-e4a4794905f0" class="" dir="auto"><span style="border-bottom:0.05em solid">Synchronization Cost</span></h3><p id="377fcadd-8ce8-805e-a98d-f562fd9aa04b" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80bf-9697-f3403e06e635" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80bd-ae56-fde953b4f986" class="" dir="auto">
+</p><p id="377fcadd-8ce8-802b-ba9e-c296494222a4" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80d7-aa2c-d7d88859a35b" class="" dir="auto">
+</p><h4 id="377fcadd-8ce8-8014-b79f-cedb1f036cb9" class="" dir="auto">Occupancy :</h4><p id="377fcadd-8ce8-808f-9973-edab162341e7" class="" dir="auto">Higher occupancy allows the SM to hide memory latency by switching to other ready warps while one warp waits for global memory. This keeps execution units busy and improves hardware utilization.</p><p id="379fcadd-8ce8-80b9-9df3-dc53ac91db5c" class="" dir="auto">
+</p><p id="377fcadd-8ce8-808d-a4f3-fb08ababf648" class="" dir="auto">
+</p><h4 id="377fcadd-8ce8-8067-9971-cd1cb2eb828d" class="" dir="auto">Memory Coalescing:  GPU <strong>rewards coalescing</strong>.<br/><br/></h4><p id="377fcadd-8ce8-808f-a1df-ffb061ebbf27" class="" dir="auto">
+</p><p id="377fcadd-8ce8-8044-a827-e55b5f523b4a" class="" dir="auto">
+</p><p id="377fcadd-8ce8-8003-a3b2-c829dcaa611a" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80c2-a091-efbe5b2c18cf" class="" dir="auto">
+</p></div><div id="377fcadd-8ce8-80c7-a54e-c662ec761947" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="377fcadd-8ce8-8056-8266-edc89f2b5f3f" class="" dir="auto">Load tile A<br/>Load tile B</p><p id="377fcadd-8ce8-8071-bdc1-c2babf03e7c7" class="" dir="auto">__syncthreads()</p><p id="377fcadd-8ce8-800b-a670-f07d6b770c6c" class="" dir="auto">Compute</p><p id="377fcadd-8ce8-80cb-a1db-e9bbd2c332f3" class="" dir="auto">__syncthreads()</p><p id="377fcadd-8ce8-80e8-b177-f014047d0711" class="" dir="auto">Load next tile</p><p id="377fcadd-8ce8-8016-92a0-fbf0f9a84b1d" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80d5-af74-d22a17cd85a6" class="" dir="auto">In Kernel B, each thread gets more registers. Because registers are limited, fewer threads and fewer warps can fit on the SM. <br/><br/>When one warp has to wait for memory, there may not be enough other warps available to do work, so parts of the GPU sit idle and the program can become slower.</p><p id="377fcadd-8ce8-8059-ba1a-e99012d51cd8" class="" dir="auto">
+</p><p id="377fcadd-8ce8-80b7-9270-e5cb4de55fc0" class="" dir="auto">Memory coalescing occurs when neighboring threads in a warp access neighboring memory locations, allowing the GPU to combine many accesses into a few efficient memory transactions.<br/>Non-coalesced accesses force the GPU to perform many separate memory transactions, greatly reducing memory bandwidth efficiency!</p><p id="378fcadd-8ce8-8038-b516-f132c88c0ed5" class="" dir="auto">
+</p></div></div><div id="379fcadd-8ce8-809c-8d15-c5733beab274" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-8027-a177-d5dcb0233c8c" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="374fcadd-8ce8-80dd-8ee9-e73e722f9c87" class="" dir="auto"><span style="border-bottom:0.05em solid">Suppose a warp loads:</span><br/>  <br/>A[row][k]: for neighboring values of <code>k</code>.<br/>                 These are adjacent in memory.<br/></p></div><div id="379fcadd-8ce8-804f-8737-f2dc10436709" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-80a6-94a9-efb0432b0aa5" class="" dir="auto"><br/><br/>B[k][col] : In row-major storage these are far apart. <br/>That&#x27;s “strided memory accesses”. Potentially terrible.</p></div></div><p id="379fcadd-8ce8-8038-ab61-dacfe969ac10" class="" dir="auto">And row-major memory layout favors one of those much more than the other!</p><p id="379fcadd-8ce8-803f-bb04-f6b2965a3dc0" class="" dir="auto">
+</p><h3 id="379fcadd-8ce8-8045-8ff8-d233df195b3b" class="" dir="auto">Warps concept:</h3><h4 id="379fcadd-8ce8-80c2-bcf9-e1dfd9bcf04d" class="" dir="auto"><span style="border-bottom:0.05em solid">Warp Scheduling:</span></h4><p id="379fcadd-8ce8-806d-816d-ed4727dc7a46" class="" dir="auto">suppose SM has 4 warps , If warp 0 must wait.</p><p id="379fcadd-8ce8-8017-8319-f83a94d20fe9" class="" dir="auto">Then SM immediately says:<br/>Fine.  Run Warp 1.<br/>This switching is very cheap because all the warp state is already stored on the SM.</p><h4 id="379fcadd-8ce8-801d-8b08-c11e629a989d" class="" dir="auto"><span style="border-bottom:0.05em solid">Warp Divergence:</span></h4><div id="379fcadd-8ce8-801f-92c0-fc9e9bb54e37" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-809a-b0e3-cb4f801247b6" style="width:106.25%" class="column" data-notion-column-ratio="1.0625" dir="auto"><p id="379fcadd-8ce8-805d-a490-e1835091bfaa" class="" dir="auto">Now: Threads 0-15  want A<br/>         Threads 16-31 want B</p><p id="379fcadd-8ce8-802b-8e35-c5fc44bde08e" class="" dir="auto">The warp disagrees. The warp has split.<br/>This is Divergence!</p><p id="379fcadd-8ce8-807b-ad27-e75572df8e0b" class="" dir="auto">This Reduces Performance Greatly since Warp was SIMF (Single Instruction, Multiple Follower).</p></div><div id="379fcadd-8ce8-806e-a4e0-d2d39bc6d978" style="width:93.75000000000001%" class="column" data-notion-column-ratio="0.9375000000000001" dir="auto"><pre id="379fcadd-8ce8-804c-ab46-c71cc57afd85" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">if(threadIdx.x &lt; 16)
+    do_A();
+else
+    do_B();</code></pre><p id="379fcadd-8ce8-8071-93db-f32b218866d0" class="" dir="auto">
+</p></div></div><h3 id="379fcadd-8ce8-80fe-b9e2-f6df464787af" class="" dir="auto"><span style="border-bottom:0.05em solid">Arithmetic Intensity:</span></h3><p id="379fcadd-8ce8-80a1-b901-fc9dd792711f" class="" dir="auto">Arithmetic Intensity=Bytes moved from memory / Number of arithmetic operations</p><figure id="379fcadd-8ce8-808b-9440-f5dd5312bf64" class="equation" data-notion-equation="{{AI=Arithmetic OperationsBytes Moved}}    AI=\frac{\text{Arithmetic Operations}}{\text{Bytes Moved}}" dir="auto"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">hm</span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">c</span><span class="mord mathnormal">Op</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord mathnormal">t</span><span class="mord mathnormal">es</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">e</span><span class="mord mathnormal">d</span></span></span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2519em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Bytes Moved</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord">Arithmetic Operations</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></div></figure><p id="379fcadd-8ce8-80b4-81e9-f8b07ecb63cc" class="" dir="auto">UNIT : FLOPs / byte <br/>where, (FLOP = floating-point operation)<br/>            we divide by <strong>bytes moved</strong>, not by the number of memory operations.</p><p id="379fcadd-8ce8-8067-81f3-d4257db4914f" class="" dir="auto">At,    AI = 0.1 FLOPs/byte ,    YOU are memory Bound<br/>At,    AI = 100 FLOPs/byte,    YOU are Compute Bound</p><p id="379fcadd-8ce8-80ba-9cab-c50005140add" class="" dir="auto">tiled GEMM gets dramatically faster since they reuse some values a lot, increasing the AI.</p><p id="379fcadd-8ce8-80ec-a922-ed2e3c25e645" class="" dir="auto">
+</p><div id="379fcadd-8ce8-8041-baf2-dc7eac12b900" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-80b9-a140-f9c6e8565801" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-80ec-b4d6-d3c3331a00b2" class="" dir="auto">__syncthreads(); for synced threads</p><p id="379fcadd-8ce8-806b-b813-c6d474163e86" class="" dir="auto">__shared_ _ float As[Tile][Tile];</p><p id="379fcadd-8ce8-8023-abed-ea3bf52fd535" class="" dir="auto">
+</p></div><div id="379fcadd-8ce8-8050-b77b-c8135581f842" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><pre id="379fcadd-8ce8-80e6-99de-e1d8a9635165" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">//load A tile into As
+//load B tile into Bs
+__syncthreads()
+
+compute using As and Bs
+
+__syncthreads()</code></pre></div></div><h4 id="379fcadd-8ce8-8015-8bcd-fb0f8c9817dc" class="" dir="auto"><span style="border-bottom:0.05em solid">Cooperative Loading: </span></h4><p id="379fcadd-8ce8-805c-b35a-cd5b79c8f749" class="" dir="auto">suppose As contains 16×16 = 256 floats<br/>Who loads them? NOT 1 thread, but 256 different threads load 256 values<br/><br/></p><p id="379fcadd-8ce8-8041-a3d6-db748fe96f47" class="" dir="auto"><span style="border-bottom:0.05em solid">Register Tiling:</span>  Thread does 4x<br/>A thread becomes a tiny matrix-multiply engine that produces a small block of C rather than a single element.<br/>That idea is called <strong>register tiling</strong> because the partial sums live in registers.<br/>Now one thread computes:<br/>                                          C[row][col+0]<br/>                                          C[row][col+1]<br/>                                          C[row][col+2]<br/>                                          C[row][col+3]<br/>This now INCREASES the use of loaded A row WAY MORE! GREAT! </p><p id="379fcadd-8ce8-80da-a95a-f9ba7ec66e4d" class="" dir="auto">
+</p><h4 id="379fcadd-8ce8-8006-8da2-d85752d9ce96" class="" dir="auto"><span style="border-bottom:0.05em solid">Warp Tiling:</span></h4><p id="379fcadd-8ce8-8023-9494-cb879e09d28a" class="" dir="auto">Now the Warp does 4X (not literary).<br/>                                                           32 workers<br/>                                                           coordinate<br/>                                                           to build an entire wall section.</p><p id="379fcadd-8ce8-80b0-841e-ecb9b1bdc532" class="" dir="auto">So high-performance GEMMs doesn’t think;<br/>                                                                      So high-performance GEMMs<br/>But it thinks:<br/>                                                                      What should one warp do?</p><p id="379fcadd-8ce8-80bf-8f1f-f23ab738b7a3" class="" dir="auto">
+</p><p id="379fcadd-8ce8-801b-8b7e-eedcc682da4f" class="" dir="auto">Hierarchy:</p><div id="379fcadd-8ce8-80ab-96a0-f9b80ee36136" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-803d-b1b9-f9b545301e52" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-80cd-854b-d509cb6a2e41" class="" dir="auto">Thread Block<br/>↓<br/>Warp Tile<br/>↓<br/>Register Tile</p></div><div id="379fcadd-8ce8-8099-991f-f0a9e83a1c47" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-80d7-87df-def1475b6b20" class="" dir="auto">Block computes:<br/>128×128 tile of C</p><p id="379fcadd-8ce8-80ed-89b9-da75dc1f9ee1" class="" dir="auto">Inside block:</p><p id="379fcadd-8ce8-8096-8a7a-ceb571845d8f" class="" dir="auto">Warp 0 computes:<br/>64×64 region   </p><p id="379fcadd-8ce8-802f-9ee7-cdda9f156d44" class="" dir="auto">Warp 1 computes:<br/>64×64 region</p><p id="379fcadd-8ce8-805d-9b07-db3ab0ad5fe5" class="" dir="auto">Warp 2 computes:<br/>64×64 region</p><p id="379fcadd-8ce8-80de-8e9c-c80cf79aacd1" class="" dir="auto">Warp 3 computes:<br/>64×64 region</p></div><div id="379fcadd-8ce8-8035-b616-daa2de0227bb" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-804b-b5b7-f2dee4fec75d" class="" dir="auto">Each thread computes : </p><p id="379fcadd-8ce8-8006-abcc-e6630a91d97d" class="" dir="auto">2×2<br/>4×4<br/>8×2</p><p id="379fcadd-8ce8-803a-95a7-c21d338a913e" class="" dir="auto">Based on the kernel design..</p></div></div><div id="379fcadd-8ce8-80e9-9954-ee54bcb796fb" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-809b-9ff0-f22a07c8909c" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-805d-ac81-c7d555a6b528" class="" dir="auto">High-performance GEMM thinking:<br/>warp is the worker!<br/>threads are the lanes inside that worker<br/><br/>U start asking:<br/>What tile should this warp compute?<br/>and then work is scheduled inside the Warp!</p></div><div id="379fcadd-8ce8-80ce-bdd3-dd3c40d8b823" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-80e5-91f9-cb7855702894" class="" dir="auto">Naive thinking:<br/>thread is the worker</p></div></div><p id="379fcadd-8ce8-80d6-85d2-c1c3c40cfda4" class="" dir="auto">
+</p><h4 id="379fcadd-8ce8-8031-aca9-ff94d2d5bafa" class="" dir="auto">Notice, We load (time waste) → we compute → we store (time waste)</h4><h4 id="379fcadd-8ce8-8084-8a1e-e0c1abaa3423" class="" dir="auto">Solution: Double buffering!</h4><p id="379fcadd-8ce8-80f1-9c6d-e45041be0f24" class="" dir="auto">                        Compute Tile A   →    while     →      Loading Tile B</p><p id="379fcadd-8ce8-8043-957a-c11e420ac5b5" class="" dir="auto"><br/>You need a guarantee: <em>the buffer being computed from is frozen</em>. If you only had one buffer, the moment you start loading the next tile, you&#x27;re writing into the exact memory your compute threads are reading. No synchronization can fix that — you&#x27;d need to finish compute first, which defeats the whole purpose.</p><p id="379fcadd-8ce8-8020-919b-d17f48c86d74" class="" dir="auto">Two buffers means one is always &quot;safe to read&quot; and the other is &quot;safe to write.&quot; You alternate ownership each tile iteration.</p><p id="379fcadd-8ce8-808a-b5f8-ed6df3e2f665" class="" dir="auto">
+</p><h3 id="379fcadd-8ce8-80eb-a0b0-d087b610063e" class="" dir="auto"><span style="border-bottom:0.05em solid">Software Pipelining:</span>  All stages are busy at once!</h3><p id="379fcadd-8ce8-80ab-a25e-e88c448ca0d2" class="" dir="auto">Software pipelining is the broader idea of organizing execution so that multiple stages are active simultaneously:<br/>                        Load next tile<br/>                        Compute current tile<br/>                        Store previous results</p><p id="379fcadd-8ce8-8046-9d8a-ff33bda46302" class="" dir="auto">instead of:    <br/>                   Load     →      Compute   →    Store</p><p id="379fcadd-8ce8-801c-b70b-dd4a6dbcf534" class="" dir="auto">
+</p><h3 id="379fcadd-8ce8-8085-8197-e67cc9ed29b7" class="" dir="auto"><span style="border-bottom:0.05em solid">Tensor Core :</span> </h3><div id="379fcadd-8ce8-8099-99f8-d1e64c3d396b" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-8066-bd5b-f500ef935465" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-8022-9f93-ed4b5fb81cbd" class="" dir="auto">Instead of: <br/>               1 operation<br/>              → one multiply-add</p><p id="379fcadd-8ce8-8083-8d0a-d113a2711852" class="" dir="auto">a Tensor Core performs a whole tiny matrix multiplication.</p></div><div id="379fcadd-8ce8-80be-a64f-faeea57cdeaa" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-80a6-8063-ca8f790a0317" class="" dir="auto">D=A×B+C</p><p id="379fcadd-8ce8-8034-8fa8-d3a381e2a052" class="" dir="auto">where A, B, C, D are small matrix fragments.</p><p id="379fcadd-8ce8-8062-a6f1-e458a91b41bd" class="" dir="auto">This operation is called:<br/>      MMA (Matrix Multiply-Accumulate)</p></div></div><h4 id="379fcadd-8ce8-8063-89e9-d36e5c7b1672" class="" dir="auto"><strong>                                                 </strong><strong><span style="border-bottom:0.05em solid">KEY IDEA!</span></strong></h4><div id="379fcadd-8ce8-8053-b51a-e5bebacfed9e" class="column-list" data-notion-column-list="" dir="auto"><div id="379fcadd-8ce8-8047-bc26-d8ecfa55898b" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-8068-aae8-d578dd9d1e6b" class="" dir="auto">CUDA Core<br/>↓<br/>scalar arithmetic</p></div><div id="379fcadd-8ce8-80ce-ae19-c0564d59adbc" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="379fcadd-8ce8-8035-91cc-d2a7ce9180c8" class="" dir="auto">Tensor Core<br/>↓<br/>matrix arithmetic</p></div></div><p id="379fcadd-8ce8-8019-b184-fa8021d551a1" class="" dir="auto">The hardware itself understands matrix multiplication.  Not just individual multiplies and adds.<br/>A well-written Tensor Core GEMM can be several times faster than an equivalent CUDA-core GEMM.</p><h4 id="379fcadd-8ce8-80c8-b140-fcb19f6b8271" class="" dir="auto">Only the <strong>innermost compute engine</strong> changes.</h4><h3 id="379fcadd-8ce8-8002-b1be-db09e04d1e31" class="" dir="auto">Roofline Model:</h3><p id="379fcadd-8ce8-80f0-8830-d03eb57afbb3" class="" dir="auto">This is the performance-analysis tool that ties everything together.<br/>The Roofline Model gives a quantitative answer:<br/><br/>                                  ““  <strong>What is the maximum performance<br/>                                    this kernel can possibly achieve?</strong>  “”<br/>AND<br/>                                      “”What is limiting me? <br/>                     Memory bandwidth?    CUDA cores?    Tensor cores?“”</p><p id="379fcadd-8ce8-804a-8f18-d858a6df1fb4" class="" dir="auto">The Roofline idea is:<br/><br/>                 <strong>min(  Memory Bandwidth × Arithmetic Intensity,  Peak Compute  )</strong></p><p id="379fcadd-8ce8-80d1-bc07-ccf706277116" class="" dir="auto">
+</p><h2 id="379fcadd-8ce8-8073-8923-c9c6840fb76a" class="" dir="auto">Conclusion: and Why cuBLAS Wins!!</h2><p id="379fcadd-8ce8-8013-8ff9-d0baaaf9119e" class="" dir="auto">
+</p><p id="379fcadd-8ce8-8019-bfb1-ffeb3bdedfbc" class="" dir="auto">Level 1: Naive GEMM →</p><p id="379fcadd-8ce8-8033-b083-cba3fd46af61" class="" dir="auto">Level 2: Shared-Memory GEMM →   Think Reuse</p><p id="379fcadd-8ce8-80bf-ae5f-f144caf216fd" class="" dir="auto">Level 3: Register-Tiled GEMM →</p><p id="379fcadd-8ce8-808f-9125-dded6e2e6d73" class="" dir="auto">Level 4: Warp-Tiled GEMM →</p><p id="379fcadd-8ce8-80e5-9ea3-dd17f99ac897" class="" dir="auto">Level 5: Double Buffering + Software Pipelining →    Keep everything at use</p><p id="379fcadd-8ce8-80c9-986a-e7af7601ccf2" class="" dir="auto">Level 6: Tensor Cores  →     Dedicated Hardware, not for add, but for MMA</p><p id="379fcadd-8ce8-8088-94d1-e55529241de0" class="" dir="auto">And then it does things we barely touched:</p><p id="379fcadd-8ce8-80fc-a0da-d4c1fa823ccb" class="" dir="auto">                                   Chooses tile sizes per GPU<br/>                                   Chooses kernel per matrix shape<br/>                                   Chooses kernel per data type<br/>                                   Balances occupancy<br/>                                   Balances register usage<br/>                                   Balances shared memory usage<br/>                                   Uses advanced Tensor Core instructions</p><h4 id="379fcadd-8ce8-8060-971c-d50104aade74" class="" dir="auto"><strong>“”cuBLAS is winning because it simultaneously does all the tricks correctly.””</strong></h4><h4 id="379fcadd-8ce8-801a-9ce5-ef33173e57bd" class="" dir="auto">Fast GEMM is the art of reusing data as many times as possible while keeping every part of the GPU busy all the time.</h4><p id="379fcadd-8ce8-801a-96cb-d3403c41686c" class="" dir="auto">
+</p><p id="379fcadd-8ce8-809f-a815-ef21e00f5a73" class="" dir="auto">
+</p><h3 id="379fcadd-8ce8-80b2-91e4-e53dd652c551" class="" dir="auto">Bank Conflict: The Enemy of shared Perfomances!</h3><p id="379fcadd-8ce8-8034-ad9c-c5c169788f0a" class="" dir="auto">Stride’s GCD with 32 should be 1 otherwise there will be multiple hits at the same bank and that causes Serialization!<br/>Stride 32 is worst, it causes all customers to hit bank 1, then 33rd (which is the 1st one only), and so on!<br/>(Multiple warps or threads accessing data are the customers)</p><p id="37cfcadd-8ce8-808a-8913-fa9b194bf94b" class="" dir="auto">
+</p><h2 id="37cfcadd-8ce8-8006-9939-ca55897783c0" class="" dir="auto">Questions:</h2><ol type="1" id="37cfcadd-8ce8-80a3-9e5d-c9772f2dac89" class="numbered-list" start="1" dir="auto"><li>CPU GEMM uses transposing + packing to fix memory access patterns; CUDA never transposes B before a kernel launch — so why doesn&#x27;t strided B[k][col] access in naive GEMM get the same &quot;transpose first&quot; fix that the CPU version uses?</li></ol><ol type="1" id="37cfcadd-8ce8-8073-bbba-c5adeb200026" class="numbered-list" start="2" dir="auto"><li>Shared memory exists per-block and is much smaller than global memory. Why not just make global memory itself faster instead of adding this whole extra tier with manual loading and <code>__syncthreads()</code> — wouldn&#x27;t a faster global memory bus solve the same problem with way less programmer complexity?</li></ol><ol type="1" id="37cfcadd-8ce8-8041-b26f-f6c6145664c0" class="numbered-list" start="3" dir="auto"><li>Register tiling makes one thread compute multiple output elements (4x, 8x). But each thread already has limited registers, and more registers per thread means fewer active threads/lower occupancy. So why is trading occupancy for register tiling considered a <em>win</em> — isn&#x27;t lower occupancy supposed to be bad?</li></ol><ol type="1" id="37cfcadd-8ce8-80aa-8325-c07777749d11" class="numbered-list" start="4" dir="auto"><li>Double buffering needs two full shared-memory tile buffers, doubling shared memory usage per block, which could itself reduce occupancy. Given that shared memory is already a scarce resource, why is this trade considered worth it — couldn&#x27;t the same latency-hiding be achieved just by having more warps per SM instead?</li></ol><ol type="1" id="37cfcadd-8ce8-800a-a520-de2c6e874a91" class="numbered-list" start="5" dir="auto"><li>Warp tiling reorganizes work around &quot;what should this warp compute&quot; instead of &quot;what should this thread compute.&quot; But a warp is still made of 32 threads doing the actual work — so isn&#x27;t warp tiling just register tiling with extra bookkeeping? What does thinking at the warp level actually buy you that thread-level register tiling doesn&#x27;t?</li></ol><ol type="1" id="37cfcadd-8ce8-8078-8b30-dcbcd225881c" class="numbered-list" start="6" dir="auto"><li>Tensor Cores execute MMA (matrix-multiply-accumulate) on small fragments directly in hardware. If this is so much faster, why do we even bother with shared-memory tiling, register tiling, and warp tiling at all — why not just feed everything straight to Tensor Cores and skip the whole software pipeline?</li></ol><ol type="1" id="37cfcadd-8ce8-80b0-88f7-ccae2f79c21a" class="numbered-list" start="7" dir="auto"><li>The Roofline Model says performance is bounded by <code>min(Memory BW × AI, Peak Compute)</code>. If a kernel is already compute-bound (high AI), is there any point optimizing memory access patterns (coalescing, bank conflicts) further — or does that become irrelevant once you&#x27;re past the memory-bound region?</li></ol><ol type="1" id="37cfcadd-8ce8-807d-af86-ced8ff57afdc" class="numbered-list" start="8" dir="auto"><li>Bank conflicts happen when stride&#x27;s GCD with 32 isn&#x27;t 1. Couldn&#x27;t this be solved permanently and simply by just padding every shared memory array by one extra column — and if so, why isn&#x27;t this treated as a &quot;solved problem&quot; that every kernel just does by default, instead of being analyzed as a recurring concern?</li></ol><ol type="1" id="37cfcadd-8ce8-8042-8426-fbdbcecde279" class="numbered-list" start="9" dir="auto"><li>Cooperative loading has 256 threads load 256 floats into shared memory instead of 1 thread looping 256 times. But thread launch/coordination has overhead too — how confident can we be that 256-thread cooperative loading is actually faster than a single thread doing a tight loop, given the synchronization cost (<code>__syncthreads()</code>) that follows?</li></ol><ol type="1" id="37cfcadd-8ce8-8006-9d93-f9b4ab51c67c" class="numbered-list numbered-list-digits-2" start="10" dir="auto"><li>cuBLAS picks different kernels per GPU, per matrix shape, and per data type — essentially a huge library of pre-tuned variants with runtime dispatch. Isn&#x27;t this just brute-force engineering rather than a fundamentally smarter algorithm? If so, is &quot;matching cuBLAS&quot; in personal code even a meaningful target, or are we really just trying to match <em>one</em> of its many specialized kernels for <em>one</em> specific shape/GPU?</li></ol><p id="37cfcadd-8ce8-80a8-a0c6-d4a940a6624d" class="" dir="auto">
+</p><h2 id="37cfcadd-8ce8-80ba-880e-eb79d4ea7611" class="" dir="auto">Answers:</h2><ol type="1" id="37cfcadd-8ce8-80f0-82d3-dad4c1561c52" class="numbered-list" start="1" dir="auto"><li>Tiling and packing solve different problems. Tiling selects the submatrix that will fit into cache or shared memory. Packing then copies that tile into a layout optimized for the compute kernel. High-performance CPU GEMM typically does both. GPUs always tile, and the shared-memory staging step often provides many of the benefits that CPU implementations obtain through explicit packing.</li></ol><ol type="1" id="37cfcadd-8ce8-8070-9813-f79576490cae" class="numbered-list" start="2" dir="auto"><li>Faster global memory would certainly help, but it would not solve the core problem. Shared memory is not just a lower-latency version of global memory; it enables data reuse. In GEMM, a block loads a tile from global memory once and then reuses that tile many times for computation. Without shared memory, the same values would need to be fetched repeatedly from DRAM, consuming enormous bandwidth. The reason GPUs add an on-chip shared-memory tier is that arithmetic throughput scales much faster than off-chip memory bandwidth. Shared memory bridges that gap by converting expensive DRAM accesses into cheap on-chip accesses and enabling high arithmetic intensity. So the real motivation is reuse and bandwidth amplification, not merely making memory physically closer to the cores.</li></ol><ol type="1" id="37cfcadd-8ce8-8082-ba34-c36b57425cdd" class="numbered-list" start="3" dir="auto"><li>Register tiling increases the amount of computation performed per value loaded from memory. Instead of computing a single output, each thread computes multiple outputs and reuses values already held in registers. This increases arithmetic intensity and reduces memory traffic per FLOP. Although register tiling consumes more registers and may reduce occupancy, occupancy is only valuable for hiding latency. Once sufficient occupancy exists, further increases provide diminishing returns. In GEMM, the gains from increased data reuse and reduced memory traffic typically outweigh the loss in occupancy, so trading some occupancy for register tiling often results in higher overall throughput.                   </li></ol><ol type="1" id="37dfcadd-8ce8-8051-a9d4-ec7dcf45a35e" class="numbered-list" start="4" dir="auto"><li>Double buffering allocates two shared-memory tiles so that while one tile is being used for computation, the next tile can be loaded from global memory. This overlaps memory transfers with computation and significantly reduces exposed memory latency. Although it increases shared-memory usage and may reduce occupancy, occupancy only needs to be high enough to hide residual latency. Beyond that point, additional warps provide diminishing returns. In practice, the throughput gained by pipelining load and compute often outweighs the loss in occupancy, making double buffering a net performance win.</li></ol><ol type="1" id="37dfcadd-8ce8-8040-a11c-d7d90c135abb" class="numbered-list" start="5" dir="auto"><li>Register tiling and warp tiling operate at different levels. Register tiling decides how many output elements a <strong>single thread</strong> accumulates in its own registers to increase data reuse and arithmetic intensity. Warp tiling, on the other hand, treats the <strong>entire warp of 32 threads as a cooperative unit</strong> and assigns it a larger output tile. This allows the threads to coordinate their work, exploit warp-synchronous execution, use warp-level communication primitives, and map efficiently to hardware features such as Tensor Cores. In practice, warp tiling is not a replacement for register tiling—it builds on top of it. Each thread may still register-tile internally while the warp collectively computes a larger tile.</li></ol><ol type="1" id="37dfcadd-8ce8-8082-a2df-d0a922c80796" class="numbered-list" start="6" dir="auto"><li>If a kernel is truly compute-bound, then improving memory access patterns alone is unlikely to produce significant speedups because the computation pipeline, not memory, is the active bottleneck in the Roofline model. However, memory optimizations can still be valuable if poor access patterns—such as uncoalesced accesses or bank conflicts—are preventing the kernel from actually reaching peak compute throughput. In practice, once the memory subsystem is no longer the limiting factor, further gains usually come from improving compute efficiency rather than memory performance.</li></ol><ol type="1" id="37efcadd-8ce8-8086-8f60-c11e346157a5" class="numbered-list" start="7" dir="auto"><li></li></ol><ol type="1" id="37efcadd-8ce8-8035-bb2c-cbf95b167515" class="numbered-list" start="8" dir="auto"><li>Padding by one extra column is a common technique to eliminate bank conflicts caused by row strides that are multiples of the number of banks, such as changing a 32-element stride to 33. However, it is not a universal fix. Bank conflicts depend on the actual access pattern, indexing scheme, and hardware bank mapping. Some kernels have different stride patterns, indirect indexing, or would lose too much shared memory capacity if everything were padded. As a result, padding is an important optimization, but bank conflicts remain a recurring performance consideration rather than a permanently solved problem.</li></ol><ol type="1" id="37efcadd-8ce8-80da-8e1a-d0c94f536587" class="numbered-list" start="9" dir="auto"><li>A single thread loading 256 values performs those loads serially, so the total loading time scales with the number of values. In cooperative loading, 256 threads each load one value simultaneously, allowing the GPU to exploit its massive parallelism and memory bandwidth. Although <code>__syncthreads()</code> introduces a synchronization point, its cost is typically much smaller than the cost of serializing all 256 loads. The barrier is required only to ensure that every thread sees a fully populated shared-memory tile before computation begins. Therefore, the gain from parallel loading overwhelmingly outweighs the synchronization overhead.</li></ol><ol type="1" id="37efcadd-8ce8-80fd-b794-e992b1674528" class="numbered-list numbered-list-digits-2" start="10" dir="auto"><li>cuBLAS is not fundamentally using a different matrix multiplication algorithm; it achieves its performance through exceptional engineering. Its kernels combine techniques such as shared-memory tiling, register tiling, warp tiling, double buffering, software pipelining, and Tensor Core utilization, but the key advantage is that NVIDIA provides many highly optimized kernel variants and dispatches the one best suited to the current GPU architecture, matrix dimensions, and data type. This is partly an engineering and autotuning problem rather than a new mathematical insight. Therefore, matching cuBLAS in personal code is a meaningful goal only for a specific workload and hardware target. Reproducing cuBLAS&#x27;s performance across the full space of GPUs, data types, and matrix shapes would require an enormous collection of specialized kernels and tuning logic rather than a single universally optimal implementation.</li></ol><p id="37ffcadd-8ce8-8083-bc8a-e7f50ce67eb5" class="" dir="auto">
+</p><p id="37ffcadd-8ce8-80a9-9a2a-eadcf7583cf3" class="" dir="auto">
+</p><p id="37ffcadd-8ce8-80b3-bad0-d534b0591018" class="" dir="auto">Some answers worth my time:</p><ol type="1" id="37ffcadd-8ce8-8015-a20b-f1a14633e667" class="numbered-list" start="1" dir="auto"><li>A CUDA GPU exposes several memory spaces:</li></ol><ul id="37ffcadd-8ce8-805f-9aa6-f9ff5fe97686" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Registers</strong> – Private to each thread; fastest memory.</li></ul><ul id="37ffcadd-8ce8-8024-adda-e068ff00c688" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Shared Memory</strong> – On-chip memory shared by threads in the same block.</li></ul><ul id="37ffcadd-8ce8-8012-87c3-cbdc3a1e1ac6" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Local Memory</strong> – Per-thread memory stored in global memory (used when registers spill or for large local arrays).</li></ul><ul id="37ffcadd-8ce8-8002-ac14-e8e2f9bc1e5a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Global Memory</strong> – Large off-chip DRAM accessible by all threads and the host.</li></ul><ul id="37ffcadd-8ce8-80c3-9597-f7502550c207" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Constant Memory</strong> – Read-only memory optimized for broadcasts when all threads read the same location.</li></ul><ul id="37ffcadd-8ce8-80c4-b253-f58d7c45a416" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Texture Memory</strong> – Read-only cached memory optimized for certain spatial access patterns</li></ul><p id="37ffcadd-8ce8-805b-99bf-f7e9479c86ae" class="" dir="auto">
+</p><ol type="1" id="37ffcadd-8ce8-80dc-b010-ee1688d585ae" class="numbered-list" start="2" dir="auto"><li></li></ol><pre id="37ffcadd-8ce8-802a-90d6-f72bcb59aa75" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">__global__ void transpose(const float* in, float* out,
+                          int rows, int cols) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x; // column
+    int y = blockIdx.y * blockDim.y + threadIdx.y; // row
+
+    if (x &lt; cols &amp;&amp; y &lt; rows) {
+        out[x * rows + y] = in[y * cols + x];
+    }
+}</code></pre><p id="37ffcadd-8ce8-806c-8eff-cc845f683f05" class="" dir="auto">for : </p><div id="37ffcadd-8ce8-80ce-a9bc-d7995298dd8f" class="column-list" data-notion-column-list="" dir="auto"><div id="37ffcadd-8ce8-802a-b774-fc09d9a1dede" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="37ffcadd-8ce8-802d-8586-ef15e507778c" class="" dir="auto">blockIdx = (2, 3)<br/>threadIdx = (5, 3)<br/>blockDim  = (16, 16)</p></div><div id="37ffcadd-8ce8-807d-8659-f7c3dc2ddb89" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="37ffcadd-8ce8-80be-8fa7-d59cc8b076f3" class="" dir="auto">x = blockIdx.x * blockDim.x + threadIdx.x<br/>= 2 * 16 + 5<br/>= 37<br/>y = blockIdx.y * blockDim.y + threadIdx.y<br/>= 3 * 16 + 3<br/>= 51</p></div></div><p id="37ffcadd-8ce8-8060-bf1c-daa181b6646e" class="" dir="auto">At last: <br/>In C/C++, a 2D matrix is typically stored in <strong>row-major order</strong> as a flat array.<br/>e.g. :<br/>Matrix (2 × 3)                       will be stored as   </p><p id="37ffcadd-8ce8-8091-b6a5-fb49054ab577" class="" dir="auto">1 2 3                                       Index:  0 1 2 3 4 5<br/>4 5 6                                       Value:  1 2 3 4 5 6                                       <br/>                                                </p><p id="37ffcadd-8ce8-80df-8a46-db64b834ff97" class="" dir="auto">
+</p><pre id="37ffcadd-8ce8-8026-877a-f1bdd420f297" class="code code-wrap" data-notion-code-syntax="cpp"><code class="language-cpp" style="white-space:pre-wrap;word-break:break-all">out[37 * rows + 51] = [51 * cols + 37];</code></pre><p id="37ffcadd-8ce8-80fc-88a3-d7aa3ad7666f" class="" dir="auto">
+</p><p id="37ffcadd-8ce8-8051-8de2-e87402546439" class="" dir="auto">
+</p><ol type="1" id="37ffcadd-8ce8-80eb-8b2c-d809ff6253f2" class="numbered-list" start="3" dir="auto"><li>A <strong>warp</strong> is a group of <strong>32 threads</strong> that execute the <strong>same instruction at the same time</strong> on a Streaming Multiprocessor (SM). It is the basic scheduling unit of NVIDIA GPUs<br/><br/>The GPU scheduler <strong>does not schedule individual threads</strong>. It schedules <strong>warps</strong>.<br/>If Warp 0 stalls waiting for memory:  Another Warp which is ready starts.\</li></ol><p id="37ffcadd-8ce8-8046-b5c7-f06f7c00c4fd" class="" dir="auto">
+</p><ol type="1" id="37ffcadd-8ce8-809b-a62c-e44c228ae37a" class="numbered-list" start="4" dir="auto"><li> It <strong>depends on the GPU architecture and the resources used by the kernel</strong> (registers, shared memory, block size, etc.).<br/>A modern NVIDIA SM can typically support <strong>up to 64 resident warps</strong> at once (older architectures may support fewer, e.g., 48).<br/><br/><span style="border-bottom:0.05em solid">Why isn&#x27;t it always 64?</span><br/>Suppose your kernel uses a lot of registers:<br/>Then fewer threads (and therefore fewer warps) can fit on the SM.<br/><br/>Similarly, if each block uses a large amount of shared memory, the SM may only be able to host a few blocks simultaneously, reducing the number of resident warps.</li></ol><p id="382fcadd-8ce8-8007-9992-fdb7a498d91d" class="" dir="auto">
+</p><figure id="382fcadd-8ce8-8016-9679-c314f65dec23" class="image" data-notion-image="image%202.png" dir="ltr"><a href="image%202.png"><img style="width:704px" src="image%202.png"/></a></figure><figure id="382fcadd-8ce8-809b-ad63-fe00cb83e4bf" class="image" data-notion-image="image%203.png" dir="ltr"><a href="image%203.png"><img style="width:704px" src="image%203.png"/></a></figure><figure id="382fcadd-8ce8-80a5-bf27-fec34aa41890" class="image" data-notion-image="image%204.png" dir="ltr"><a href="image%204.png"><img style="width:703.9886474609375px" src="image%204.png"/></a></figure><p id="382fcadd-8ce8-8083-8cd4-de409937324b" class="" dir="auto">But, this transfer from the CPU’s RAM to the GPU’s RAM <br/><strong>IS SLOWEST STEP!<br/>t</strong>herefore, take data to GPU once only, then only from global and shared, and bring back to GPU only once at last.</p><figure id="382fcadd-8ce8-8094-8e79-e1d697021253" class="image" data-notion-image="image%205.png" dir="ltr"><a href="image%205.png"><img style="width:704px" src="image%205.png"/></a></figure><figure id="382fcadd-8ce8-8010-8279-e876bf147023" class="image" data-notion-image="image%206.png" dir="ltr"><a href="image%206.png"><img style="width:703.95458984375px" src="image%206.png"/></a></figure><figure id="382fcadd-8ce8-8013-b514-fcdf59a838fb" class="image" data-notion-image="image%207.png" dir="ltr"><a href="image%207.png"><img style="width:704px" src="image%207.png"/></a></figure><figure id="382fcadd-8ce8-8003-be70-f0d777c568a6" class="image" data-notion-image="image%208.png" dir="ltr"><a href="image%208.png"><img style="width:704px" src="image%208.png"/></a></figure><figure id="382fcadd-8ce8-805a-a6c4-d828aaaca8b2" class="image" data-notion-image="image%209.png" dir="ltr"><a href="image%209.png"><img style="width:704px" src="image%209.png"/></a></figure><p id="382fcadd-8ce8-80d3-98d2-da38be074203" class="" dir="auto">
+</p><h3 id="382fcadd-8ce8-8095-9d15-edcf5cb4aa16" class="" dir="auto"><strong><span style="border-bottom:0.05em solid">CUDE STREAM</span></strong></h3><div id="382fcadd-8ce8-8070-95e2-d5948becbea1" class="column-list" data-notion-column-list="" dir="auto"><div id="382fcadd-8ce8-8004-bb63-df637b342fdb" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="382fcadd-8ce8-8024-998f-ff83345dbf3f" class="" dir="auto">A CUDA stream is a queue of operations that execute in order.<br/><br/><br/></p><p id="382fcadd-8ce8-808a-b09e-f2043f1c0ce3" class="" dir="auto">
+</p><p id="382fcadd-8ce8-80c2-b025-fb4ed989d667" class="" dir="auto">
+</p><p id="382fcadd-8ce8-80d9-bcaf-daad7f772de1" class="" dir="auto">Multiple Streams : have 2 independent jobs!<br/>                             Don’t put them in 1 stream.<br/>                             make 2 streams!</p></div><div id="382fcadd-8ce8-80c7-a02c-c7148aea258a" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="382fcadd-8ce8-80cb-9cc6-c29c324500c6" class="" dir="auto">Stream 0:</p><p id="382fcadd-8ce8-8066-8a83-fde8ddf30364" class="" dir="auto">Copy A to GPU<br/>↓<br/>Launch GEMM<br/>↓<br/>Copy C back</p><p id="382fcadd-8ce8-80a3-809d-e5cc2430da03" class="" dir="auto">
+</p><pre id="382fcadd-8ce8-8042-8ea6-c7da33ea9f56" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">Stream 0:              Stream 1:
+
+Copy Job 1             Copy Job 2
+    ↓                      ↓
+Compute Job 1          Compute Job 2
+    ↓                      ↓
+Copy Back Job 1        Copy Back Job 2</code></pre></div></div><p id="382fcadd-8ce8-808e-93b4-d6f86cc59015" class="" dir="auto">The GPU may overlap these operations if hardware resources permit.</p><p id="382fcadd-8ce8-8060-9dea-f0f441758111" class="" dir="auto">With well-designed streams:<br/><br/>[Copy 1][Compute 1][Copy Back 1]<br/>            [Copy 2][Compute 2][Copy Back 2]</p><p id="382fcadd-8ce8-8081-b6a1-ffe793a48ff1" class="" dir="auto">
+</p><div id="382fcadd-8ce8-8091-b361-e9990398a678" class="column-list" data-notion-column-list="" dir="auto"><div id="382fcadd-8ce8-802e-b931-f1879b2f1e02" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="382fcadd-8ce8-8099-8ead-dccdcbf5c817" class="" dir="auto">Double Buffering:<br/>Loading + Computation</p><p id="382fcadd-8ce8-80fb-be7b-f05b24ac8302" class="" dir="auto">
+</p></div><div id="382fcadd-8ce8-801f-99e4-f7ce7fab023f" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="382fcadd-8ce8-808e-b320-c6ecca5c1da7" class="" dir="auto">Asynchronous streams overlap:<br/>Memory Transfers + kernel launches + other transfers/kernels.<br/><br/><br/>It&#x27;s about <strong>running multiple independent sequences of operations</strong>.</p></div><div id="382fcadd-8ce8-8008-bbeb-ca8d8d0fdce4" style="width:100%" class="column" data-notion-column-ratio="1" dir="auto"><p id="382fcadd-8ce8-8058-9b4e-f5e1280e596b" class="" dir="auto">Software Pipelining:<br/></p><p id="382fcadd-8ce8-8072-b56d-f95cd6741b07" class="" dir="auto">Everyone stays busy.<br/>All processes inside  </p><p id="382fcadd-8ce8-803e-bb11-f262c14c9a57" class="" dir="auto">
+</p></div></div><table id="382fcadd-8ce8-80f4-86e9-e0faa2643ee9" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="382fcadd-8ce8-80f7-aa30-e4e4ed99a9bf" dir="ltr"><th id="OZ;h" class="simple-table-header-color simple-table-header">Concept</th><th id="[cfd" class="simple-table-header-color simple-table-header">What overlaps?</th><th id="kRN{" class="simple-table-header-color simple-table-header">Level</th></tr></thead><tbody><tr id="382fcadd-8ce8-80f2-8271-c7e431df5233" dir="ltr"><td id="OZ;h" class=""><strong>Double Buffering</strong></td><td id="[cfd" class="">Loading the <strong>next tile</strong> while computing the <strong>current tile</strong></td><td id="kRN{" class=""><strong>Inside one kernel</strong>, using two buffers</td></tr><tr id="382fcadd-8ce8-8047-a2ba-e31184a5c10f" dir="ltr"><td id="OZ;h" class=""><strong>Software Pipelining</strong></td><td id="[cfd" class="">Different <strong>stages</strong> (load, compute, store) of work</td><td id="kRN{" class=""><strong>Inside one kernel</strong>, via scheduling</td></tr><tr id="382fcadd-8ce8-8042-8cf9-e33be9fec2fc" dir="ltr"><td id="OZ;h" class=""><strong>Asynchronous Streams</strong></td><td id="[cfd" class="">Entire <strong>kernels and memory copies</strong> from different queues</td><td id="kRN{" class=""><strong>Outside the kernel</strong>, at the CUDA runtime level</td></tr></tbody></table><h3 id="384fcadd-8ce8-800e-9242-f66aeb073ae0" class="" dir="auto"><span style="border-bottom:0.05em solid">Shape of a Block matters!</span></h3><p id="382fcadd-8ce8-80e2-9ce2-fd5dc0d6e873" class="" dir="auto">The total number of threads in a block matters most—whether it’s 64x16 or 32x32, you’ll have 1024 threads either way. But there’s a catch! Shape can matter for memory access patterns or parallelism. For example, if your data is 2D, a 32x32 shape might fit better with coalesced memory access or shared memory tiling. So, while the “shape” doesn’t affect the raw thread count, it can impact performance if it aligns better with your data layout or memory access patterns. In short: shape can matter, but it depends on your problem!<br/><br/></p><p id="384fcadd-8ce8-80c3-90df-e40189c88393" class="" dir="auto">GPU are better, but after Matrix size : 500</p><figure id="384fcadd-8ce8-8087-aa16-dea396d3b16e" class="image" data-notion-image="image%2010.png" dir="ltr"><a href="image%2010.png"><img style="width:703.9886474609375px" src="image%2010.png"/></a></figure><p id="384fcadd-8ce8-808a-a9dc-d9747f236a8d" class="" dir="auto">Question:<br/>GPU’s underperform for small matrices, Why?<br/></p><p id="384fcadd-8ce8-80bb-9102-c980a28ea6eb" class="" dir="auto">1st thought, caches are small <br/>another good thought : The have a lot of process, transfers, launches and allocating which has a overhead, which dominates the actual computing process of the GPU is the data is small.<br/></p><h4 id="384fcadd-8ce8-8012-ad21-dbe6fb6091e7" class="" dir="auto">A stronger interview answer</h4><blockquote id="384fcadd-8ce8-805e-9f85-f8ef8fc68410" class="" dir="auto"><strong>For small matrices, the GPU is underutilized. The overhead of launching kernels, transferring data, and scheduling work can dominate the actual computation. There also may not be enough parallel work to occupy all the SMs. As the matrix size grows, the GPU&#x27;s massive parallelism and high memory bandwidth are better utilized, so performance improves dramatically.</strong></blockquote><p id="384fcadd-8ce8-8094-b1ea-d20d940f31b8" class="" dir="auto">
+</p><p id="384fcadd-8ce8-807e-89a1-de1ba89fee0a" class="" dir="auto">
+</p><figure id="384fcadd-8ce8-804d-9962-f660a3a61365" class="image" data-notion-image="image%2011.png" dir="ltr"><a href="image%2011.png"><img style="width:703.977294921875px" src="image%2011.png"/></a></figure><h2 id="384fcadd-8ce8-8048-b88d-e31959eba771" class="" dir="auto"><strong><span style="border-bottom:0.05em solid">Reason</span></strong><strong> :</strong></h2><p id="384fcadd-8ce8-80d7-9e2b-cae06974be1d" class="" dir="auto">The optimization simply swapped the mapping of <code>threadIdx.x</code> and <code>threadIdx.y</code> to matrix columns and rows. This changed the direction in which a warp traverses the matrix: instead of moving <strong>horizontally across a row</strong>, it started moving <strong>vertically down a column</strong>. Since matrices are stored in <strong>row-major order</strong>, the horizontal traversal produces <strong>coalesced (contiguous) memory accesses</strong>, while the vertical traversal causes <strong>strided accesses</strong> that require many more memory transactions. The computation is mathematically identical, but the memory access pattern is dramatically different, leading to a large performance gap.</p><blockquote id="384fcadd-8ce8-8080-9c78-d22afbf79cbf" class="" dir="auto"><strong>Golden rule:</strong> <strong>Don&#x27;t optimize for rows or columns—optimize so that consecutive threads in a warp access consecutive memory addresses.</strong></blockquote><p id="384fcadd-8ce8-80be-87fd-ea91baaf230d" class="" dir="auto">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
